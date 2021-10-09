@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 const express = require('express')
 const app = express();
 const cors = require('cors');
-const {addBook, getBooks, getOneBook, getAuthors, getOneAuthor, addAuthor} = require('./controllers')
+const {addBook, getBooks, getOneBook, updateBook, getAuthors, getOneAuthor, addAuthor} = require('./controllers')
 const PORT = process.env.PORT || 5000
 
 app
@@ -20,6 +20,11 @@ app
     .post("/book", async (req, res) => {
         const newBook = req.body
         const result = await addBook(newBook)
+        res.status(201).send(result)
+    })
+    .patch("/book/:id", async (req, res) => {
+        const updatedBook = req.body
+        const result = await updateBook(req.params.id, updatedBook)
         res.status(201).send(result)
     })
     // Endpoints for Authors

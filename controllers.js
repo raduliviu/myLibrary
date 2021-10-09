@@ -44,6 +44,18 @@ async function addBook(book) {
     return newBook
 }
 
+async function updateBook(id, newBook) {
+    await db.query("UPDATE ${table:name} SET title = '${newTitle:value}', description = '${newDescription:value}', author_id = ${authorId} WHERE id = ${bookId}", {
+        table: 'books',
+        bookId: id,
+        newTitle: newBook.title,
+        newDescription: newBook.description,
+        authorId: newBook.author_id
+    });
+    const updatedBook = getOneBook(id)
+    return updatedBook;
+}
+
 // Functions for Authors
 async function getAuthors() {
     const authors = await db.query('SELECT ${columns:name} FROM ${table:name}', {
@@ -73,4 +85,4 @@ async function addAuthor(author) {
 }
 
 
-module.exports = {addBook, getBooks, getOneBook, getAuthors, getOneAuthor, addAuthor}
+module.exports = {addBook, getBooks, getOneBook, updateBook, getAuthors, getOneAuthor, addAuthor}
