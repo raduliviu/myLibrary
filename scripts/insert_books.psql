@@ -1,11 +1,11 @@
 INSERT INTO books(title, description, author_id)
-VALUES ('Foundation', 'Epic Sci-fi', 3);
+VALUES ('Foundation', 'Epic Sci-fi', 1);
 
 INSERT INTO books(title, description, author_id)
-VALUES ('American Gods', 'Urban Fantasy', 5);
+VALUES ('American Gods', 'Urban Fantasy', 3);
 
 INSERT INTO books(title, description, author_id)
-VALUES ('Naked Lunch', 'Post-modern masterpiece', 4);
+VALUES ('Naked Lunch', 'Post-modern masterpiece', 2);
 
 INSERT INTO books(title, description, author_id)
-VALUES ('Sandman', 'Classic comicbook', 5);
+VALUES ('Sandman', 'Classic comicbook', 3);
