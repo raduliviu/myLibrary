@@ -18,19 +18,17 @@ if (process.env.DATABASE_URL) {
 
 // Functions for Books
 async function getBooks() {
-    const books = await db.query('SELECT ${columns:name} FROM ${table:name}', {
-        columns: ['id', 'title', 'description'],
-        table: 'books'
-    });
+    const books = await db.query(`
+        SELECT a.name author, b.title, b.description, b.id book_id
+        FROM books AS b
+        LEFT JOIN author AS a
+        ON a.id = b.author_id;
+    `);
     return books;
 }
 
 async function getOneBook(id) {
-    const book = await db.query('SELECT ${columns:name} FROM ${table:name} WHERE id = ${bookId}', {
-        columns: ['id', 'title', 'description'],
-        table: 'books',
-        bookId: id
-    });
+    const book = await db.one("SELECT a.name author, b.title, b.description, b.id book_id FROM books AS b LEFT JOIN author AS a ON a.id = b.author_id WHERE b.id = $1;", [id]);
     return book;
 }
 
@@ -40,8 +38,8 @@ async function addBook(book) {
         description: book.description,
         author_id: book.authorId
     }
-    await db.query('INSERT INTO books(${this:name}) VALUES(${this:csv})', newBook)
-    return newBook
+    const result = await db.one('INSERT INTO books(${this:name}) VALUES(${this:csv}) RETURNING id', newBook)
+    return getOneBook(result.id);
 }
 
 async function updateBook(id, newBook) {
@@ -52,8 +50,15 @@ async function updateBook(id, newBook) {
         newDescription: newBook.description,
         authorId: newBook.author_id
     });
-    const updatedBook = getOneBook(id)
-    return updatedBook;
+    return getOneBook(id);
+}
+
+async function deleteBook(id) {
+    await db.query("DELETE FROM ${table:name} WHERE id = ${bookId}", {
+        table: 'books',
+        bookId: id
+    });
+    return true;
 }
 
 // Functions for Authors
@@ -85,4 +90,4 @@ async function addAuthor(author) {
 }
 
 
-module.exports = {addBook, getBooks, getOneBook, updateBook, getAuthors, getOneAuthor, addAuthor}
+module.exports = {addBook, getBooks, getOneBook, updateBook, deleteBook, getAuthors, getOneAuthor, addAuthor}
