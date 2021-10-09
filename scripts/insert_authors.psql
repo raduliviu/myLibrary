@@ -1,3 +1,3 @@
 INSERT INTO author(name) VALUES ('Isaac Asimov');
 INSERT INTO author(name) VALUES ('William S. Burroughs');
-INSERT INTO author(name, birthdate) VALUES ('Neil Gaiman', '12 October 1970');
+INSERT INTO author(name, birthdate) VALUES ('Neil Gaiman', '10 November 1960');

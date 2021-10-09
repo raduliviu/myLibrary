@@ -4,7 +4,8 @@ const password = process.env.DB_PASS
 const host = process.env.DB_HOST
 const port = process.env.DB_PORT
 
-const uri = `postgres://${username}:${password}@${host}:${port}/library`
+const local_uri = `postgres://${username}:${password}@${host}:${port}/library`
+const uri = process.env.DATABASE_URL || local_uri
 const db = pgp(uri);
 
 async function addBook(book) {
