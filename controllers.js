@@ -1,10 +1,5 @@
 const pgp = require('pg-promise')()
-const username = process.env.DB_USER
-const password = process.env.DB_PASS
-const host = process.env.DB_HOST
-const port = process.env.DB_PORT
 
-let uri = `postgres://${username}:${password}@${host}:${port}/library`
 let db
 if (process.env.DATABASE_URL) {
     db = pgp({
@@ -12,6 +7,12 @@ if (process.env.DATABASE_URL) {
         ssl: { rejectUnauthorized: false }
     })
 } else {
+    const username = process.env.DB_USER
+    const password = process.env.DB_PASS
+    const host = process.env.DB_HOST
+    const port = process.env.DB_PORT
+
+    let uri = `postgres://${username}:${password}@${host}:${port}/library`
     db = pgp(uri);
 }
 
