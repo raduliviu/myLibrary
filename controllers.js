@@ -44,7 +44,6 @@ async function addBook(book) {
 
 async function updateBook(id, newBook) {
     const currentBook = await getOneBook(id)
-    console.log(currentBook)
     await db.query("UPDATE ${table:name} SET title = '${newTitle:value}', description = '${newDescription:value}', author_id = ${authorId} WHERE id = ${bookId}", {
         table: 'books',
         bookId: id,
