@@ -36,19 +36,21 @@ async function addBook(book) {
     const newBook = {
         title: book.title,
         description: book.description,
-        author_id: book.authorId
+        author_id: book.author_id
     }
     const result = await db.one('INSERT INTO books(${this:name}) VALUES(${this:csv}) RETURNING id', newBook)
     return getOneBook(result.id);
 }
 
 async function updateBook(id, newBook) {
+    const currentBook = await getOneBook(id)
+    console.log(currentBook)
     await db.query("UPDATE ${table:name} SET title = '${newTitle:value}', description = '${newDescription:value}', author_id = ${authorId} WHERE id = ${bookId}", {
         table: 'books',
         bookId: id,
-        newTitle: newBook.title,
-        newDescription: newBook.description,
-        authorId: newBook.author_id
+        newTitle: newBook.title || currentBook.title,
+        newDescription: newBook.description || currentBook.description,
+        authorId: newBook.author_id || currentBook.author_id
     });
     return getOneBook(id);
 }
@@ -71,7 +73,7 @@ async function getAuthors() {
 }
 
 async function getOneAuthor(id) {
-    const author = await db.query('SELECT ${columns:name} FROM ${table:name} WHERE id = ${authorId}', {
+    const author = await db.one('SELECT ${columns:name} FROM ${table:name} WHERE id = ${authorId}', {
         columns: ['id', 'name', 'birthdate'],
         table: 'author',
         authorId: id
@@ -81,13 +83,31 @@ async function getOneAuthor(id) {
 
 async function addAuthor(author) {
     const newAuthor = {
-        id: author.id,
         name: author.name,
         birthdate: author.birthdate
     }
-    await db.query('INSERT INTO author(${this:name}) VALUES(${this:csv})', newAuthor)
-    return newAuthor
+    const result = await db.one('INSERT INTO author(${this:name}) VALUES(${this:csv}) RETURNING id', newAuthor)
+    return getOneAuthor(result.id);
+}
+
+async function updateAuthor(id, newAuthor) {
+    const currentAuthor = await getOneAuthor(id)
+    await db.query("UPDATE ${table:name} SET name = '${newName:value}', birthdate = '${newBirthdate:value}' WHERE id = ${authId}", {
+        table: 'author',
+        authId: id,
+        newName: newAuthor.name || currentAuthor.name,
+        newBirthdate: newAuthor.birthdate || currentAuthor.birthdate
+    });
+    return getOneAuthor(id);
+}
+
+async function deleteAuthor(id) {
+    await db.query("DELETE FROM ${table:name} WHERE id = ${authId}", {
+        table: 'author',
+        authId: id
+    });
+    return true;
 }
 
 
-module.exports = {addBook, getBooks, getOneBook, updateBook, deleteBook, getAuthors, getOneAuthor, addAuthor}
+module.exports = {addBook, getBooks, getOneBook, updateBook, deleteBook, getAuthors, getOneAuthor, addAuthor, updateAuthor, deleteAuthor}

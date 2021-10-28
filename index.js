@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 const express = require('express')
 const app = express();
 const cors = require('cors');
-const {addBook, getBooks, getOneBook, updateBook, deleteBook, getAuthors, getOneAuthor, addAuthor} = require('./controllers')
+const {addBook, getBooks, getOneBook, updateBook, deleteBook, getAuthors, getOneAuthor, addAuthor, updateAuthor, deleteAuthor} = require('./controllers')
 const PORT = process.env.PORT || 5000
 
 app
@@ -58,17 +58,51 @@ app
     })
     // Endpoints for Authors
     .get("/author", async (req, res) => {
-        const result = await getAuthors()
-        res.status(200).send(result)
+        try {
+            const result = await getAuthors()
+            res.status(200).send(result)
+        }
+        catch (err) {
+            res.status(406).send(err)
+        }  
     })
     .get("/author/:id", async (req, res) => {
-        const result = await getOneAuthor(req.params.id)
-        res.status(200).send(result)
+        try {
+            const result = await getOneAuthor(req.params.id)
+            res.status(200).send(result)
+        }
+        catch (err) {
+            res.status(406).send(err)
+        }
     })
     .post("/author", async (req, res) => {
-        const newAuthor = req.body
-        const result = await addAuthor(newAuthor)
-        res.status(201).send(result)
+        try {
+            const newAuthor = req.body
+            const result = await addAuthor(newAuthor)
+            res.status(201).send(result)
+        }
+        catch (err) {
+            res.status(406).send(err)
+        }
+    })
+    .patch("/author/:id", async (req, res) => {
+        try {
+            const updatedAuthor = req.body
+            const result = await updateAuthor(req.params.id, updatedAuthor)
+            res.status(201).send(result)
+        }
+        catch (err) {
+            res.status(406).send(err)
+        }
+    })
+    .delete("/author/:id", async (req, res) => {
+        try {
+            const result = await deleteAuthor(req.params.id)
+            res.status(200).send(result)
+        }
+        catch (err) {
+            res.status(406).send(err)
+        }
     })
     .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
