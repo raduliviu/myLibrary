@@ -100,6 +100,7 @@ async function updateAuthor(id, newAuthor) {
     return getOneAuthor(id);
 }
 
+//TODO - You can't delete an Author if there is a book that references him (author_id) - could do something in the frontend to tell the user to delete the book first before deleting the author
 async function deleteAuthor(id) {
     await db.query("DELETE FROM ${table:name} WHERE id = ${authId}", {
         table: 'author',
